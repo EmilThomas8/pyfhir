@@ -1,15 +1,38 @@
 import unittest
 
-import pyfhir
+from src.pyfhir.resources import Patient
+from src.pyfhir.datatypes import HumanName
+from src.pyfhir.core.types import FHIRDate
 
 
-class TestImport(unittest.TestCase):
+class TestCoercion(unittest.TestCase):
 
-    def test_version(self):
-        self.assertEqual(pyfhir.__version__, "0.1.0")
+    def test_nested_object(self):
 
-    def test_title(self):
-        self.assertEqual(pyfhir.__title__, "pyfhir")
+        patient = Patient(
+            name=[
+                {
+                    "family": "Thomas",
+                    "given": ["Emil"]
+                }
+            ]
+        )
+
+        self.assertIsInstance(
+            patient.name[0],
+            HumanName
+        )
+
+    def test_primitive(self):
+
+        patient = Patient(
+            birthDate="2004-03-21"
+        )
+
+        self.assertIsInstance(
+            patient.birthDate,
+            FHIRDate
+        )
 
 
 if __name__ == "__main__":
